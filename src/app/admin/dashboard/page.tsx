@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
 import { CalendarCheck, Clock, CheckCircle, XCircle, TrendingUp } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
 import Link from "next/link";
@@ -77,7 +78,7 @@ export default async function AdminDashboardPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {bookings.map((b) => (
+              {bookings.map((b: Prisma.BookingGetPayload<object>) => (
                 <tr key={b.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 font-medium text-gray-900">{b.customerName}</td>
                   <td className="px-6 py-4 text-gray-500 capitalize">{b.serviceType.replace(/-/g, " ")}</td>
