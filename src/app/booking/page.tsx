@@ -3,7 +3,7 @@
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { CheckCircle, ChevronRight, ChevronLeft, Sparkles } from "lucide-react";
-import { EXTRAS_LIST, calculatePrice } from "@/lib/pricing";
+import { calculatePrice } from "@/lib/pricing";
 import { formatCurrency } from "@/lib/utils";
 
 const SERVICES = [
@@ -43,12 +43,22 @@ type FormData = {
   notes: string;
 };
 
+type AddonItem = { id: string; name: string; price: number };
+
 function BookingForm() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [step, setStep] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [addonsList, setAddonsList] = useState<AddonItem[]>([]);
+
+  useEffect(() => {
+    fetch("/api/addons")
+      .then((r) => r.json())
+      .then((data) => setAddonsList(data))
+      .catch(() => {});
+  }, []);
 
   const [form, setForm] = useState<FormData>({
     serviceType: searchParams.get("service") || "",
@@ -65,10 +75,12 @@ function BookingForm() {
     notes: "",
   });
 
+  const addonPriceMap = Object.fromEntries(addonsList.map((a) => [a.id, a.price]));
   const estimatedPrice = calculatePrice(
     form.serviceType,
     parseInt(form.bedrooms) || null,
-    form.extras
+    form.extras,
+    addonPriceMap
   );
 
   const toggleExtra = (id: string) => {
@@ -224,7 +236,7 @@ function BookingForm() {
                   Add-On Services (Optional)
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {EXTRAS_LIST.map((extra) => (
+                  {addonsList.map((extra) => (
                     <button
                       key={extra.id}
                       onClick={() => toggleExtra(extra.id)}
@@ -234,7 +246,7 @@ function BookingForm() {
                           : "border-gray-200 hover:border-green-200"
                       }`}
                     >
-                      <span className="font-medium text-gray-800">{extra.label}</span>
+                      <span className="font-medium text-gray-800">{extra.name}</span>
                       <span className={`font-semibold ${form.extras.includes(extra.id) ? "text-green-600" : "text-gray-500"}`}>
                         +${extra.price}
                       </span>
@@ -367,7 +379,7 @@ function BookingForm() {
                 <ReviewRow label="Email" value={form.customerEmail} />
                 <ReviewRow label="Phone" value={form.customerPhone} />
                 {form.extras.length > 0 && (
-                  <ReviewRow label="Add-ons" value={form.extras.map(id => EXTRAS_LIST.find(e => e.id === id)?.label).join(", ")} />
+                  <ReviewRow label="Add-ons" value={form.extras.map(id => addonsList.find(a => a.id === id)?.name ?? id).join(", ")} />
                 )}
 
                 <div className="border-t pt-4 mt-4">

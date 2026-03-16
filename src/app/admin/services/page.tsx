@@ -3,6 +3,186 @@
 import { useState, useEffect } from "react";
 import { Plus, Pencil, Trash2, Check, X, ToggleLeft, ToggleRight, ListPlus, Minus } from "lucide-react";
 
+// ─── Addon types & component ─────────────────────────────────────────────────
+type Addon = {
+  id: string;
+  name: string;
+  price: number;
+  isActive: boolean;
+};
+
+function AddonsSection() {
+  const [addons, setAddons] = useState<Addon[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showAdd, setShowAdd] = useState(false);
+  const [newName, setNewName] = useState("");
+  const [newPrice, setNewPrice] = useState("");
+  const [editId, setEditId] = useState<string | null>(null);
+  const [editName, setEditName] = useState("");
+  const [editPrice, setEditPrice] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  async function load() {
+    setLoading(true);
+    const res = await fetch("/api/admin/addons");
+    setAddons(await res.json());
+    setLoading(false);
+  }
+  useEffect(() => { load(); }, []);
+
+  async function handleAdd(e: React.SyntheticEvent) {
+    e.preventDefault();
+    if (!newName || !newPrice) return;
+    setSaving(true);
+    await fetch("/api/admin/addons", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: newName, price: parseFloat(newPrice) }),
+    });
+    setSaving(false);
+    setNewName(""); setNewPrice(""); setShowAdd(false);
+    load();
+  }
+
+  async function handleEdit(e: React.SyntheticEvent) {
+    e.preventDefault();
+    if (!editId) return;
+    setSaving(true);
+    await fetch(`/api/admin/addons/${editId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: editName, price: parseFloat(editPrice) }),
+    });
+    setSaving(false);
+    setEditId(null);
+    load();
+  }
+
+  async function toggleActive(a: Addon) {
+    await fetch(`/api/admin/addons/${a.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ isActive: !a.isActive }),
+    });
+    load();
+  }
+
+  async function handleDelete(id: string) {
+    if (!confirm("Delete this add-on?")) return;
+    await fetch(`/api/admin/addons/${id}`, { method: "DELETE" });
+    load();
+  }
+
+  return (
+    <div className="mt-10">
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <h2 className="text-lg font-extrabold text-sky-900">Add-On Services</h2>
+          <p className="text-sky-600 text-xs mt-0.5">Optional extras shown on the booking form</p>
+        </div>
+        <button
+          onClick={() => setShowAdd(true)}
+          className="inline-flex items-center gap-1.5 bg-sky-500 hover:bg-sky-600 text-white px-3 py-2 rounded-xl text-xs font-semibold shadow-sm transition"
+        >
+          <Plus size={14} /> Add Add-On
+        </button>
+      </div>
+
+      {showAdd && (
+        <form onSubmit={handleAdd} className="mb-4 bg-sky-50 border border-sky-200 rounded-2xl p-4 flex flex-col sm:flex-row gap-3 items-end">
+          <div className="flex-1">
+            <label className="block text-xs font-semibold text-sky-700 mb-1">Name</label>
+            <input
+              className="w-full border border-sky-200 bg-white rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400"
+              placeholder="e.g. Carpet Shampooing"
+              value={newName}
+              onChange={(e) => setNewName(e.target.value)}
+            />
+          </div>
+          <div className="w-full sm:w-32">
+            <label className="block text-xs font-semibold text-sky-700 mb-1">Price ($)</label>
+            <input
+              type="number" min="0" step="0.01"
+              className="w-full border border-sky-200 bg-white rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400"
+              placeholder="45"
+              value={newPrice}
+              onChange={(e) => setNewPrice(e.target.value)}
+            />
+          </div>
+          <div className="flex gap-2 shrink-0">
+            <button type="submit" disabled={saving}
+              className="bg-sky-500 hover:bg-sky-600 text-white px-4 py-2 rounded-xl text-sm font-semibold disabled:opacity-50 transition">
+              {saving ? "…" : "Add"}
+            </button>
+            <button type="button" onClick={() => { setShowAdd(false); setNewName(""); setNewPrice(""); }}
+              className="border border-sky-200 text-sky-700 hover:bg-sky-100 px-4 py-2 rounded-xl text-sm font-semibold transition">
+              Cancel
+            </button>
+          </div>
+        </form>
+      )}
+
+      {loading ? (
+        <p className="text-sky-500 text-sm">Loading…</p>
+      ) : (
+        <div className="bg-white border border-sky-100 rounded-2xl divide-y divide-sky-50 shadow-sm">
+          {addons.map((a) =>
+            editId === a.id ? (
+              <form key={a.id} onSubmit={handleEdit}
+                className="flex flex-col sm:flex-row gap-3 items-end p-3 bg-sky-50">
+                <div className="flex-1">
+                  <input
+                    className="w-full border border-sky-200 bg-white rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400"
+                    value={editName}
+                    onChange={(e) => setEditName(e.target.value)}
+                  />
+                </div>
+                <div className="w-full sm:w-28">
+                  <input
+                    type="number" min="0" step="0.01"
+                    className="w-full border border-sky-200 bg-white rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400"
+                    value={editPrice}
+                    onChange={(e) => setEditPrice(e.target.value)}
+                  />
+                </div>
+                <div className="flex gap-2 shrink-0">
+                  <button type="submit" disabled={saving}
+                    className="inline-flex items-center gap-1 bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded-xl text-xs font-semibold disabled:opacity-50 transition">
+                    <Check size={13} /> Save
+                  </button>
+                  <button type="button" onClick={() => setEditId(null)}
+                    className="border border-sky-200 text-sky-700 hover:bg-sky-100 px-3 py-2 rounded-xl text-xs font-semibold transition">
+                    <X size={13} />
+                  </button>
+                </div>
+              </form>
+            ) : (
+              <div key={a.id} className={`flex items-center gap-3 px-4 py-3 ${!a.isActive ? "opacity-50" : ""}`}>
+                <span className="flex-1 text-sm font-medium text-gray-800">{a.name}</span>
+                <span className="font-bold text-sky-500 text-sm whitespace-nowrap">+${a.price.toFixed(0)}</span>
+                <div className="flex items-center gap-1 shrink-0">
+                  <button onClick={() => toggleActive(a)}
+                    className={`w-7 h-7 flex items-center justify-center rounded-lg text-xs transition ${a.isActive ? "bg-sky-100 text-sky-600 hover:bg-sky-200" : "bg-gray-100 text-gray-400 hover:bg-gray-200"}`}>
+                    {a.isActive ? <ToggleRight size={14} /> : <ToggleLeft size={14} />}
+                  </button>
+                  <button onClick={() => { setEditId(a.id); setEditName(a.name); setEditPrice(String(a.price)); }}
+                    className="w-7 h-7 flex items-center justify-center rounded-lg bg-sky-50 text-sky-600 hover:bg-sky-100 transition">
+                    <Pencil size={13} />
+                  </button>
+                  <button onClick={() => handleDelete(a.id)}
+                    className="w-7 h-7 flex items-center justify-center rounded-lg bg-red-50 text-red-400 hover:bg-red-100 transition">
+                    <Trash2 size={13} />
+                  </button>
+                </div>
+              </div>
+            )
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 type Service = {
   id: string;
   name: string;
@@ -374,6 +554,8 @@ export default function AdminServicesPage() {
           )}
         </div>
       )}
+
+      <AddonsSection />
     </div>
   );
 }

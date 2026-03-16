@@ -110,6 +110,26 @@ async function main() {
   }
   console.log("✅ Services seeded");
 
+  const addons = [
+    { name: "Inside Fridge Cleaning", price: 35 },
+    { name: "Inside Oven Cleaning", price: 35 },
+    { name: "Interior Window Cleaning", price: 50 },
+    { name: "Laundry (Wash & Dry)", price: 25 },
+    { name: "Dishes", price: 20 },
+    { name: "Wall Washing", price: 60 },
+    { name: "Garage Cleaning", price: 80 },
+    { name: "Basement Cleaning", price: 70 },
+  ];
+
+  for (const addon of addons) {
+    await prisma.addon.upsert({
+      where: { name: addon.name },
+      update: { price: addon.price },
+      create: addon,
+    });
+  }
+  console.log("✅ Add-ons seeded");
+
   await prisma.$disconnect();
   await pool.end();
 }

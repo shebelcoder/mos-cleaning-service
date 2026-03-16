@@ -39,7 +39,8 @@ export const EXTRAS_LIST = [
 export function calculatePrice(
   serviceType: string,
   bedrooms: number | null,
-  extras: string[]
+  extras: string[],
+  dynamicExtrasPrices?: Record<string, number>
 ): number {
   const base = SERVICE_PRICES[serviceType] ?? 120;
   const bedroomMultiplier =
@@ -48,8 +49,9 @@ export function calculatePrice(
       : bedrooms && bedrooms > 5
       ? 2.0
       : 1.0;
+  const priceMap = dynamicExtrasPrices ?? EXTRAS_PRICES;
   const extrasTotal = extras.reduce(
-    (sum, extra) => sum + (EXTRAS_PRICES[extra] ?? 0),
+    (sum, extra) => sum + (priceMap[extra] ?? 0),
     0
   );
   return Math.round(base * bedroomMultiplier + extrasTotal);

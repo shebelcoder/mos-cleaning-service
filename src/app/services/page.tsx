@@ -29,18 +29,14 @@ const slugMap: Record<string, string> = {
 export const dynamic = "force-dynamic";
 
 export default async function ServicesPage() {
-  const dbServices = await prisma.service.findMany({
-    where: { isActive: true },
-    orderBy: { createdAt: "asc" },
-  });
+  const [dbServices, dbAddons] = await Promise.all([
+    prisma.service.findMany({ where: { isActive: true }, orderBy: { createdAt: "asc" } }),
+    prisma.addon.findMany({ where: { isActive: true }, orderBy: { createdAt: "asc" } }),
+  ]);
 
   const services = dbServices.map((s) => {
     let includes: string[] = [];
-    try {
-      includes = JSON.parse(s.includes);
-    } catch {
-      includes = [];
-    }
+    try { includes = JSON.parse(s.includes); } catch { includes = []; }
     return {
       ...s,
       includes,
@@ -109,32 +105,25 @@ export default async function ServicesPage() {
         </div>
       </section>
 
-      {/* Add-Ons */}
-      <section className="py-16 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-10">
-            <h2 className="text-3xl font-extrabold text-gray-900 mb-3">Extra Add-On Services</h2>
-            <p className="text-gray-500 text-lg">Customize your clean with these optional extras.</p>
+      {/* Add-Ons — live from DB */}
+      {dbAddons.length > 0 && (
+        <section className="py-16 bg-gray-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-10">
+              <h2 className="text-3xl font-extrabold text-gray-900 mb-3">Extra Add-On Services</h2>
+              <p className="text-gray-500 text-lg">Customize your clean with these optional extras.</p>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {dbAddons.map((addon) => (
+                <div key={addon.id} className="bg-white rounded-xl p-4 text-center shadow-sm border border-gray-100">
+                  <div className="font-semibold text-gray-900">{addon.name}</div>
+                  <div className="text-blue-600 font-bold mt-1">+${addon.price.toFixed(0)}</div>
+                </div>
+              ))}
+            </div>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {[
-              { label: "Inside Fridge", price: "$35" },
-              { label: "Inside Oven", price: "$35" },
-              { label: "Interior Windows", price: "$50" },
-              { label: "Laundry (Wash & Dry)", price: "$25" },
-              { label: "Dishes", price: "$20" },
-              { label: "Wall Washing", price: "$60" },
-              { label: "Garage Cleaning", price: "$80" },
-              { label: "Basement Cleaning", price: "$70" },
-            ].map((extra) => (
-              <div key={extra.label} className="bg-white rounded-xl p-4 text-center shadow-sm border border-gray-100">
-                <div className="font-semibold text-gray-900">{extra.label}</div>
-                <div className="text-blue-600 font-bold mt-1">{extra.price}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* CTA */}
       <section className="py-16 bg-gradient-to-r from-blue-600 to-green-600">
