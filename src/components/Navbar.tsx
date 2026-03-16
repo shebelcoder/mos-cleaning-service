@@ -4,89 +4,120 @@ import { useState } from "react";
 import Link from "next/link";
 import { Menu, X, Phone } from "lucide-react";
 
+const links = [
+  { href: "/", label: "Home" },
+  { href: "/services", label: "Services" },
+  { href: "/about", label: "About Us" },
+  { href: "/contact", label: "Contact" },
+];
+
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
-  const links = [
-    { href: "/", label: "Home" },
-    { href: "/services", label: "Services" },
-    { href: "/booking", label: "Book Now" },
-    { href: "/about", label: "About Us" },
-    { href: "/contact", label: "Contact" },
-  ];
-
   return (
-    <nav className="bg-white shadow-md sticky top-0 z-50">
+    <nav className="bg-white shadow-sm sticky top-0 z-50 border-b border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
+
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-green-500 rounded-full flex items-center justify-center">
-              <span className="text-white font-bold text-lg">M</span>
+          <Link href="/" className="flex items-center gap-2.5 shrink-0">
+            <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: "#003d54" }}>
+              <span className="text-white font-extrabold text-lg" style={{ color: "#00adee" }}>M</span>
             </div>
-            <div>
-              <span className="font-bold text-gray-900 text-lg">Mo&apos;s</span>
-              <span className="text-blue-600 font-bold text-lg"> Cleaning</span>
-              <div className="text-xs text-gray-500 leading-none">Edmonton, AB</div>
+            <div className="leading-tight">
+              <div className="font-extrabold text-base" style={{ color: "#003d54" }}>
+                Mo&apos;s <span style={{ color: "#00adee" }}>Cleaning</span>
+              </div>
+              <div className="text-xs text-gray-400">Edmonton, AB</div>
             </div>
           </Link>
 
           {/* Desktop nav */}
-          <div className="hidden md:flex items-center gap-6">
+          <div className="hidden md:flex items-center gap-7">
             {links.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`text-gray-700 hover:text-blue-600 font-medium transition-colors ${
-                  link.href === "/booking"
-                    ? "bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 hover:text-white"
-                    : ""
-                }`}
+                className="text-sm font-medium text-gray-600 hover:text-[#00adee] transition-colors"
               >
                 {link.label}
               </Link>
             ))}
           </div>
 
-          {/* Phone CTA */}
-          <a
-            href="tel:+15872221440"
-            className="hidden md:flex items-center gap-2 text-green-600 font-semibold hover:text-green-700"
-          >
-            <Phone size={18} />
-            (587) 222-1440
-          </a>
+          {/* Desktop right side */}
+          <div className="hidden md:flex items-center gap-4">
+            <a
+              href="tel:+15872221440"
+              className="flex items-center gap-1.5 text-sm font-semibold transition-colors"
+              style={{ color: "#00adee" }}
+            >
+              <Phone size={16} />
+              (587) 222-1440
+            </a>
+            <Link
+              href="/booking"
+              className="text-sm font-bold text-white px-5 py-2.5 rounded-full transition-colors"
+              style={{ backgroundColor: "#32373c" }}
+            >
+              Book Now
+            </Link>
+          </div>
 
-          {/* Mobile menu button */}
-          <button
-            className="md:hidden p-2 text-gray-700"
-            onClick={() => setIsOpen(!isOpen)}
-          >
-            {isOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+          {/* Mobile: phone + hamburger */}
+          <div className="flex items-center gap-3 md:hidden">
+            <a
+              href="tel:+15872221440"
+              className="text-sm font-semibold"
+              style={{ color: "#00adee" }}
+            >
+              <Phone size={20} />
+            </a>
+            <button
+              className="p-1.5 rounded-lg text-gray-600"
+              style={{ color: "#003d54" }}
+              onClick={() => setIsOpen(!isOpen)}
+              aria-label="Toggle menu"
+            >
+              {isOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
         </div>
       </div>
 
       {/* Mobile menu */}
       {isOpen && (
-        <div className="md:hidden bg-white border-t px-4 py-4 space-y-3">
-          {links.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="block text-gray-700 hover:text-blue-600 font-medium py-2"
-              onClick={() => setIsOpen(false)}
-            >
-              {link.label}
-            </Link>
-          ))}
-          <a
-            href="tel:+15872221440"
-            className="flex items-center gap-2 text-green-600 font-semibold py-2"
-          >
-            <Phone size={18} />
-            (587) 222-1440
-          </a>
+        <div className="md:hidden border-t border-gray-100 bg-white">
+          <div className="px-4 pt-3 pb-5 space-y-1">
+            {links.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="block px-3 py-3 text-sm font-medium text-gray-700 rounded-xl hover:bg-[#f1f4f4] transition-colors"
+                onClick={() => setIsOpen(false)}
+              >
+                {link.label}
+              </Link>
+            ))}
+            <div className="pt-3 pb-1 border-t border-gray-100 mt-2">
+              <a
+                href="tel:+15872221440"
+                className="flex items-center gap-2 px-3 py-3 text-sm font-semibold rounded-xl hover:bg-[#f1f4f4] transition-colors"
+                style={{ color: "#00adee" }}
+              >
+                <Phone size={16} />
+                (587) 222-1440
+              </a>
+              <Link
+                href="/booking"
+                onClick={() => setIsOpen(false)}
+                className="mt-2 flex items-center justify-center text-sm font-bold text-white py-3 rounded-full transition-colors"
+                style={{ backgroundColor: "#32373c" }}
+              >
+                Book Now
+              </Link>
+            </div>
+          </div>
         </div>
       )}
     </nav>

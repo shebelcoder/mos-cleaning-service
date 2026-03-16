@@ -130,32 +130,36 @@ function BookingForm() {
   const minDate = tomorrow.toISOString().split("T")[0];
 
   return (
-    <div className="min-h-screen bg-gray-50 py-10">
+    <div className="min-h-screen py-10" style={{ backgroundColor: "#f1f4f4" }}>
       <div className="max-w-2xl mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 rounded-full px-4 py-2 mb-4 text-sm font-medium">
-            <Sparkles size={16} />
+          <div className="inline-flex items-center gap-2 rounded-full px-4 py-2 mb-4 text-sm font-semibold" style={{ backgroundColor: "#00adee1a", color: "#00adee" }}>
+            <Sparkles size={15} />
             Online Booking
           </div>
-          <h1 className="text-3xl font-extrabold text-gray-900">Book Your Cleaning</h1>
-          <p className="text-gray-500 mt-2">Quick, easy, and get an instant price estimate.</p>
+          <h1 className="text-3xl font-extrabold" style={{ color: "#003d54" }}>Book Your Cleaning</h1>
+          <p className="text-gray-500 mt-2 text-sm">Quick, easy, and get an instant price estimate.</p>
         </div>
 
         {/* Progress Steps */}
         <div className="flex items-center justify-between mb-8">
           {STEPS.map((s, i) => (
             <div key={s} className="flex items-center">
-              <div className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold transition-colors ${
-                i < step ? "bg-green-500 text-white" : i === step ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-500"
-              }`}>
-                {i < step ? <CheckCircle size={16} /> : i + 1}
+              <div className={`flex items-center justify-center w-8 h-8 rounded-full text-xs font-bold transition-colors`}
+                style={{
+                  backgroundColor: i < step ? "#00adee" : i === step ? "#003d54" : "#e5e7eb",
+                  color: i < step || i === step ? "white" : "#9ca3af"
+                }}>
+                {i < step ? <CheckCircle size={15} /> : i + 1}
               </div>
-              <span className={`hidden sm:block ml-2 text-xs font-medium ${i === step ? "text-blue-600" : "text-gray-400"}`}>
+              <span className={`hidden sm:block ml-2 text-xs font-medium`}
+                style={{ color: i === step ? "#003d54" : "#9ca3af" }}>
                 {s}
               </span>
               {i < STEPS.length - 1 && (
-                <div className={`w-4 sm:w-8 h-0.5 mx-2 ${i < step ? "bg-green-500" : "bg-gray-200"}`} />
+                <div className="w-4 sm:w-8 h-0.5 mx-2"
+                  style={{ backgroundColor: i < step ? "#00adee" : "#e5e7eb" }} />
               )}
             </div>
           ))}
@@ -172,15 +176,17 @@ function BookingForm() {
                   <button
                     key={s.id}
                     onClick={() => setForm({ ...form, serviceType: s.id })}
-                    className={`w-full flex items-center gap-4 p-4 rounded-xl border-2 text-left transition-all ${
-                      form.serviceType === s.id
-                        ? "border-blue-500 bg-blue-50"
-                        : "border-gray-200 hover:border-blue-200"
-                    }`}
+                    className="w-full flex items-center gap-4 p-4 rounded-xl border-2 text-left transition-all"
+                    style={{
+                      borderColor: form.serviceType === s.id ? "#00adee" : "#e5e7eb",
+                      backgroundColor: form.serviceType === s.id ? "#00adee0d" : "white",
+                    }}
                   >
-                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ${
-                      form.serviceType === s.id ? "border-blue-500 bg-blue-500" : "border-gray-300"
-                    }`}>
+                    <div className="w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0"
+                      style={{
+                        borderColor: form.serviceType === s.id ? "#00adee" : "#d1d5db",
+                        backgroundColor: form.serviceType === s.id ? "#00adee" : "white",
+                      }}>
                       {form.serviceType === s.id && <div className="w-2 h-2 rounded-full bg-white" />}
                     </div>
                     <div>
@@ -204,11 +210,12 @@ function BookingForm() {
                     <button
                       key={p.id}
                       onClick={() => setForm({ ...form, propertyType: p.id })}
-                      className={`p-3 rounded-xl border-2 text-sm font-medium transition-all ${
-                        form.propertyType === p.id
-                          ? "border-blue-500 bg-blue-50 text-blue-700"
-                          : "border-gray-200 text-gray-700 hover:border-blue-200"
-                      }`}
+                      className="p-3 rounded-xl border-2 text-sm font-medium transition-all"
+                      style={{
+                        borderColor: form.propertyType === p.id ? "#00adee" : "#e5e7eb",
+                        backgroundColor: form.propertyType === p.id ? "#00adee0d" : "white",
+                        color: form.propertyType === p.id ? "#003d54" : "#374151",
+                      }}
                     >
                       {p.label}
                     </button>
@@ -240,14 +247,14 @@ function BookingForm() {
                     <button
                       key={extra.id}
                       onClick={() => toggleExtra(extra.id)}
-                      className={`flex items-center justify-between p-3 rounded-xl border-2 text-left text-sm transition-all ${
-                        form.extras.includes(extra.id)
-                          ? "border-green-500 bg-green-50"
-                          : "border-gray-200 hover:border-green-200"
-                      }`}
+                      className="flex items-center justify-between p-3 rounded-xl border-2 text-left text-sm transition-all"
+                    style={{
+                      borderColor: form.extras.includes(extra.id) ? "#00adee" : "#e5e7eb",
+                      backgroundColor: form.extras.includes(extra.id) ? "#00adee0d" : "white",
+                    }}
                     >
-                      <span className="font-medium text-gray-800">{extra.name}</span>
-                      <span className={`font-semibold ${form.extras.includes(extra.id) ? "text-green-600" : "text-gray-500"}`}>
+                      <span className="font-medium" style={{ color: "#003d54" }}>{extra.name}</span>
+                      <span className="font-bold" style={{ color: form.extras.includes(extra.id) ? "#00adee" : "#9ca3af" }}>
                         +${extra.price}
                       </span>
                     </button>
@@ -278,11 +285,12 @@ function BookingForm() {
                     <button
                       key={t}
                       onClick={() => setForm({ ...form, scheduledTime: t })}
-                      className={`p-3 rounded-lg border-2 text-sm font-medium transition-all ${
-                        form.scheduledTime === t
-                          ? "border-blue-500 bg-blue-50 text-blue-700"
-                          : "border-gray-200 text-gray-700 hover:border-blue-200"
-                      }`}
+                      className="p-3 rounded-xl border-2 text-sm font-medium transition-all"
+                      style={{
+                        borderColor: form.scheduledTime === t ? "#00adee" : "#e5e7eb",
+                        backgroundColor: form.scheduledTime === t ? "#00adee0d" : "white",
+                        color: form.scheduledTime === t ? "#003d54" : "#374151",
+                      }}
                     >
                       {t}
                     </button>
@@ -384,8 +392,8 @@ function BookingForm() {
 
                 <div className="border-t pt-4 mt-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-lg font-bold text-gray-900">Estimated Total</span>
-                    <span className="text-2xl font-extrabold text-blue-600">{formatCurrency(estimatedPrice)}</span>
+                    <span className="text-lg font-bold" style={{ color: "#003d54" }}>Estimated Total</span>
+                    <span className="text-2xl font-extrabold" style={{ color: "#00adee" }}>{formatCurrency(estimatedPrice)}</span>
                   </div>
                   <p className="text-xs text-gray-500 mt-1">Final price confirmed upon booking. Taxes may apply.</p>
                 </div>
@@ -403,7 +411,7 @@ function BookingForm() {
           {step > 0 && step < 4 && (
             <div className="mt-6 pt-4 border-t flex items-center justify-between">
               <span className="text-sm text-gray-500">Estimated Price:</span>
-              <span className="text-xl font-extrabold text-blue-600">{formatCurrency(estimatedPrice)}</span>
+              <span className="text-xl font-extrabold" style={{ color: "#00adee" }}>{formatCurrency(estimatedPrice)}</span>
             </div>
           )}
 
@@ -412,9 +420,9 @@ function BookingForm() {
             {step > 0 && (
               <button
                 onClick={() => setStep(step - 1)}
-                className="flex items-center gap-2 px-6 py-3 border border-gray-300 rounded-lg text-gray-700 font-semibold hover:bg-gray-50 transition-colors"
+                className="flex items-center gap-2 px-6 py-3 border border-gray-200 rounded-full text-gray-700 font-semibold hover:bg-gray-50 transition-colors text-sm"
               >
-                <ChevronLeft size={18} /> Back
+                <ChevronLeft size={16} /> Back
               </button>
             )}
             <div className="flex-1" />
@@ -422,17 +430,19 @@ function BookingForm() {
               <button
                 onClick={() => setStep(step + 1)}
                 disabled={!canProceed()}
-                className="flex items-center gap-2 bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex items-center gap-2 text-white px-8 py-3 rounded-full font-bold transition-opacity hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed text-sm"
+                style={{ backgroundColor: "#003d54" }}
               >
-                Next <ChevronRight size={18} />
+                Next <ChevronRight size={16} />
               </button>
             ) : (
               <button
                 onClick={handleSubmit}
                 disabled={submitting}
-                className="flex items-center gap-2 bg-green-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors disabled:opacity-60"
+                className="flex items-center gap-2 text-white px-8 py-3 rounded-full font-bold transition-opacity hover:opacity-90 disabled:opacity-60 text-sm"
+                style={{ backgroundColor: "#00adee" }}
               >
-                <CheckCircle size={18} />
+                <CheckCircle size={16} />
                 {submitting ? "Submitting..." : "Confirm Booking"}
               </button>
             )}
