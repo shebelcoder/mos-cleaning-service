@@ -15,13 +15,18 @@ export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { name, description, basePrice } = await req.json();
+  const { name, description, basePrice, includes } = await req.json();
   if (!name || !description || basePrice === undefined) {
     return NextResponse.json({ error: "Missing fields" }, { status: 400 });
   }
 
   const service = await prisma.service.create({
-    data: { name, description, basePrice: parseFloat(basePrice) },
+    data: {
+      name,
+      description,
+      basePrice: parseFloat(basePrice),
+      includes: JSON.stringify(includes ?? []),
+    },
   });
   return NextResponse.json(service, { status: 201 });
 }

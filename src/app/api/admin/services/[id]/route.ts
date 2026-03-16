@@ -11,7 +11,7 @@ export async function PATCH(
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { id } = await params;
-  const { name, description, basePrice, isActive } = await req.json();
+  const { name, description, basePrice, isActive, includes } = await req.json();
 
   const service = await prisma.service.update({
     where: { id },
@@ -20,6 +20,7 @@ export async function PATCH(
       ...(description !== undefined && { description }),
       ...(basePrice !== undefined && { basePrice: parseFloat(basePrice) }),
       ...(isActive !== undefined && { isActive }),
+      ...(includes !== undefined && { includes: JSON.stringify(includes) }),
     },
   });
 
