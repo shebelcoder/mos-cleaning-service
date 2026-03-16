@@ -315,7 +315,7 @@ function BookingForm() {
                     value={form.customerPhone}
                     onChange={(e) => setForm({ ...form, customerPhone: e.target.value })}
                     className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="(780) 555-0000"
+                    placeholder="(587) 222-0000"
                   />
                 </div>
                 <div>

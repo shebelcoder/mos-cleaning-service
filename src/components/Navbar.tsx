@@ -50,11 +50,11 @@ export default function Navbar() {
 
           {/* Phone CTA */}
           <a
-            href="tel:+17805550100"
+            href="tel:+15872221440"
             className="hidden md:flex items-center gap-2 text-green-600 font-semibold hover:text-green-700"
           >
             <Phone size={18} />
-            (780) 555-0100
+            (587) 222-1440
           </a>
 
           {/* Mobile menu button */}
@@ -81,11 +81,11 @@ export default function Navbar() {
             </Link>
           ))}
           <a
-            href="tel:+17805550100"
+            href="tel:+15872221440"
             className="flex items-center gap-2 text-green-600 font-semibold py-2"
           >
             <Phone size={18} />
-            (780) 555-0100
+            (587) 222-1440
           </a>
         </div>
       )}

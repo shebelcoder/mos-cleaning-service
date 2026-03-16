@@ -77,7 +77,7 @@ async function ConfirmationContent({ id }: { id: string }) {
 
       <div className="flex flex-col sm:flex-row gap-4">
         <a
-          href="tel:+17805550100"
+          href="tel:+15872221440"
           className="flex items-center justify-center gap-2 border border-gray-300 px-5 py-3 rounded-lg font-semibold text-gray-700 hover:bg-gray-50 flex-1"
         >
           <Phone size={18} /> Call Us

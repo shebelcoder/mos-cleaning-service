@@ -102,11 +102,11 @@ export default function HomePage() {
                 <ArrowRight size={20} />
               </Link>
               <a
-                href="tel:+17805550100"
+                href="tel:+15872221440"
                 className="inline-flex items-center justify-center gap-2 bg-white/20 border-2 border-white text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-white/30 transition-colors"
               >
                 <Phone size={20} />
-                (780) 555-0100
+                (587) 222-1440
               </a>
             </div>
             <div className="mt-8 flex items-center gap-6">

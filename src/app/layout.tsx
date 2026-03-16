@@ -42,7 +42,7 @@ export default function RootLayout({
                 addressRegion: "Alberta",
                 addressCountry: "CA",
               },
-              telephone: "+17805550100",
+              telephone: "+15872221440",
               email: "info@moscleaning.ca",
               areaServed: "Edmonton, Alberta",
               priceRange: "$$",

@@ -72,7 +72,7 @@ export async function sendBookingConfirmation(booking: {
 
         <p><strong>What's next?</strong> Our team will review your booking and send a final confirmation. If you need to make any changes, please contact us.</p>
 
-        <p>📞 Call or text: (780) 555-0100<br>
+        <p>📞 Call or text: (587) 222-1440<br>
         📧 Email: info@moscleaning.ca</p>
 
         <p>Thank you for choosing Mo's Cleaning Service!</p>
