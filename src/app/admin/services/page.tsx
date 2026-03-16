@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus, Pencil, Trash2, Check, X } from "lucide-react";
+import { Plus, Pencil, Trash2, Check, X, ToggleLeft, ToggleRight } from "lucide-react";
 
 type Service = {
   id: string;
@@ -97,68 +97,76 @@ export default function AdminServicesPage() {
   }
 
   return (
-    <div className="p-6 lg:p-8 max-w-4xl">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-extrabold text-gray-900">Services & Pricing</h1>
+    <div className="p-4 sm:p-6 lg:p-8">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
+        <div>
+          <h1 className="text-2xl font-extrabold text-sky-900">Services & Pricing</h1>
+          <p className="text-sky-600 text-sm mt-0.5">Manage the services displayed on your website</p>
+        </div>
         <button
           onClick={() => { setShowAdd(true); setError(""); }}
-          className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition"
+          className="inline-flex items-center justify-center gap-2 bg-sky-500 hover:bg-sky-600 text-white px-4 py-2.5 rounded-xl text-sm font-semibold shadow-sm transition w-full sm:w-auto"
         >
-          <Plus size={16} /> Add Service
+          <Plus size={16} /> Add New Service
         </button>
       </div>
 
-      {error && <p className="mb-4 text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-4 py-2">{error}</p>}
+      {error && (
+        <p className="mb-4 text-sm text-red-700 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
+          {error}
+        </p>
+      )}
 
       {/* Add Service Form */}
       {showAdd && (
-        <form onSubmit={handleAdd} className="mb-6 bg-white border border-blue-200 rounded-xl p-5 shadow-sm">
-          <h2 className="font-semibold text-gray-800 mb-4">New Service</h2>
+        <form onSubmit={handleAdd} className="mb-6 bg-sky-50 border border-sky-200 rounded-2xl p-5 shadow-sm">
+          <h2 className="font-bold text-sky-800 mb-4 text-base">New Service</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Service Name</label>
+              <label className="block text-xs font-semibold text-sky-700 mb-1.5">Service Name</label>
               <input
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-                placeholder="e.g. Deep Cleaning"
+                className="w-full border border-sky-200 bg-white rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 placeholder:text-gray-400"
+                placeholder="e.g. Window Cleaning"
                 value={addForm.name}
                 onChange={(e) => setAddForm({ ...addForm, name: e.target.value })}
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Base Price ($)</label>
+              <label className="block text-xs font-semibold text-sky-700 mb-1.5">Base Price ($)</label>
               <input
                 type="number"
                 min="0"
                 step="0.01"
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="w-full border border-sky-200 bg-white rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 placeholder:text-gray-400"
                 placeholder="150"
                 value={addForm.basePrice}
                 onChange={(e) => setAddForm({ ...addForm, basePrice: e.target.value })}
               />
             </div>
             <div className="sm:col-span-2">
-              <label className="block text-xs font-medium text-gray-600 mb-1">Description</label>
+              <label className="block text-xs font-semibold text-sky-700 mb-1.5">Description</label>
               <textarea
                 rows={2}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none"
-                placeholder="Short description of the service"
+                className="w-full border border-sky-200 bg-white rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 resize-none placeholder:text-gray-400"
+                placeholder="Brief description of the service"
                 value={addForm.description}
                 onChange={(e) => setAddForm({ ...addForm, description: e.target.value })}
               />
             </div>
           </div>
-          <div className="flex gap-2 mt-4">
+          <div className="flex flex-col sm:flex-row gap-2 mt-4">
             <button
               type="submit"
               disabled={saving}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium disabled:opacity-50 transition"
+              className="flex-1 sm:flex-none bg-sky-500 hover:bg-sky-600 text-white px-5 py-2.5 rounded-xl text-sm font-semibold disabled:opacity-50 transition"
             >
               {saving ? "Saving…" : "Add Service"}
             </button>
             <button
               type="button"
               onClick={() => { setShowAdd(false); setAddForm(emptyForm); setError(""); }}
-              className="border border-gray-300 text-gray-600 hover:bg-gray-50 px-4 py-2 rounded-lg text-sm font-medium transition"
+              className="flex-1 sm:flex-none border border-sky-200 text-sky-700 hover:bg-sky-100 px-5 py-2.5 rounded-xl text-sm font-semibold transition"
             >
               Cancel
             </button>
@@ -168,100 +176,124 @@ export default function AdminServicesPage() {
 
       {/* Services List */}
       {loading ? (
-        <p className="text-gray-500 text-sm">Loading services…</p>
+        <div className="flex items-center justify-center py-16">
+          <div className="w-6 h-6 border-2 border-sky-400 border-t-transparent rounded-full animate-spin" />
+          <span className="ml-3 text-sky-600 text-sm">Loading services…</span>
+        </div>
       ) : services.length === 0 ? (
-        <div className="bg-white rounded-xl border border-gray-100 p-8 text-center text-gray-500 text-sm">
+        <div className="bg-sky-50 rounded-2xl border border-sky-100 p-10 text-center text-sky-500 text-sm">
           No services yet. Add your first one above.
         </div>
       ) : (
-        <div className="bg-white rounded-xl border border-gray-100 shadow-sm divide-y divide-gray-100">
+        <div className="space-y-3">
           {services.map((s) =>
             editId === s.id ? (
-              <form key={s.id} onSubmit={handleEdit} className="p-4 bg-blue-50">
+              /* Edit row */
+              <form
+                key={s.id}
+                onSubmit={handleEdit}
+                className="bg-sky-50 border border-sky-300 rounded-2xl p-4 shadow-sm"
+              >
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
                   <div>
-                    <label className="block text-xs font-medium text-gray-600 mb-1">Name</label>
+                    <label className="block text-xs font-semibold text-sky-700 mb-1">Name</label>
                     <input
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white"
+                      className="w-full border border-sky-200 bg-white rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400"
                       value={editForm.name}
                       onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-gray-600 mb-1">Base Price ($)</label>
+                    <label className="block text-xs font-semibold text-sky-700 mb-1">Base Price ($)</label>
                     <input
                       type="number"
                       min="0"
                       step="0.01"
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white"
+                      className="w-full border border-sky-200 bg-white rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400"
                       value={editForm.basePrice}
                       onChange={(e) => setEditForm({ ...editForm, basePrice: e.target.value })}
                     />
                   </div>
                   <div className="sm:col-span-2">
-                    <label className="block text-xs font-medium text-gray-600 mb-1">Description</label>
+                    <label className="block text-xs font-semibold text-sky-700 mb-1">Description</label>
                     <textarea
                       rows={2}
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white resize-none"
+                      className="w-full border border-sky-200 bg-white rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 resize-none"
                       value={editForm.description}
                       onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
                     />
                   </div>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <button
                     type="submit"
                     disabled={saving}
-                    className="inline-flex items-center gap-1 bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-lg text-sm font-medium disabled:opacity-50 transition"
+                    className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-xl text-sm font-semibold disabled:opacity-50 transition"
                   >
-                    <Check size={14} /> Save
+                    <Check size={14} /> Save Changes
                   </button>
                   <button
                     type="button"
                     onClick={() => { setEditId(null); setError(""); }}
-                    className="inline-flex items-center gap-1 border border-gray-300 text-gray-600 hover:bg-gray-100 px-3 py-1.5 rounded-lg text-sm font-medium transition"
+                    className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 border border-sky-200 text-sky-700 hover:bg-sky-100 px-4 py-2 rounded-xl text-sm font-semibold transition"
                   >
                     <X size={14} /> Cancel
                   </button>
                 </div>
               </form>
             ) : (
-              <div key={s.id} className="flex items-center gap-4 px-5 py-4">
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className="font-semibold text-gray-900 text-sm">{s.name}</span>
+              /* Display row */
+              <div
+                key={s.id}
+                className={`bg-white border rounded-2xl px-4 py-4 shadow-sm transition ${
+                  s.isActive ? "border-sky-100" : "border-gray-100 opacity-60"
+                }`}
+              >
+                {/* Top row: name + price + actions */}
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-center gap-2 flex-wrap min-w-0">
+                    <span className="font-bold text-sky-900 text-sm">{s.name}</span>
                     {!s.isActive && (
-                      <span className="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">Inactive</span>
+                      <span className="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full font-medium">
+                        Inactive
+                      </span>
                     )}
                   </div>
-                  <p className="text-gray-500 text-xs mt-0.5 truncate">{s.description}</p>
+                  <span className="font-extrabold text-sky-500 text-sm whitespace-nowrap shrink-0">
+                    From ${s.basePrice.toFixed(0)}
+                  </span>
                 </div>
-                <span className="font-bold text-blue-600 text-sm whitespace-nowrap">${s.basePrice.toFixed(2)}</span>
-                <div className="flex items-center gap-1 shrink-0">
+
+                {/* Description */}
+                <p className="text-gray-500 text-xs mt-1.5 leading-relaxed">{s.description}</p>
+
+                {/* Action buttons */}
+                <div className="flex items-center gap-2 mt-3 pt-3 border-t border-sky-50">
                   <button
-                    title={s.isActive ? "Deactivate" : "Activate"}
                     onClick={() => toggleActive(s)}
-                    className={`w-8 h-8 flex items-center justify-center rounded-lg text-xs transition ${
+                    title={s.isActive ? "Deactivate" : "Activate"}
+                    className={`inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg transition ${
                       s.isActive
-                        ? "bg-green-50 text-green-600 hover:bg-green-100"
-                        : "bg-gray-100 text-gray-400 hover:bg-gray-200"
+                        ? "bg-sky-100 text-sky-700 hover:bg-sky-200"
+                        : "bg-gray-100 text-gray-500 hover:bg-gray-200"
                     }`}
                   >
-                    <Check size={14} />
+                    {s.isActive ? <ToggleRight size={14} /> : <ToggleLeft size={14} />}
+                    {s.isActive ? "Active" : "Inactive"}
                   </button>
+
                   <button
-                    title="Edit"
                     onClick={() => startEdit(s)}
-                    className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-50 text-gray-500 hover:bg-blue-50 hover:text-blue-600 transition"
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg bg-sky-50 text-sky-700 hover:bg-sky-100 transition"
                   >
-                    <Pencil size={14} />
+                    <Pencil size={13} /> Edit
                   </button>
+
                   <button
-                    title="Delete"
                     onClick={() => handleDelete(s.id)}
-                    className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-50 text-gray-500 hover:bg-red-50 hover:text-red-600 transition"
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg bg-red-50 text-red-500 hover:bg-red-100 transition ml-auto"
                   >
-                    <Trash2 size={14} />
+                    <Trash2 size={13} /> Delete
                   </button>
                 </div>
               </div>
