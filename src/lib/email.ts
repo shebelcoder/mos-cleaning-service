@@ -18,6 +18,7 @@ export async function sendBookingConfirmation(booking: {
   scheduledTime: string;
   address: string;
   estimatedPrice: number;
+  
   id: string;
 }) {
   const serviceNames: Record<string, string> = {
